@@ -1,0 +1,43 @@
+package co.edu.uniquindio.co.poo.model;
+
+public class Postre extends Producto{
+    private double pesoGramos;
+    private double temperaturaAlmacenamiento;
+    private boolean requiereRefrigeracion;
+
+    public Postre(String codigo, String nombre, String descripción, double precioBase, int tiempoPreparacionMin, double pesoGramos, double temperaturaAlmacenamiento, boolean requiereRefrigeracion) {
+        super(codigo, nombre, descripción, precioBase, tiempoPreparacionMin);
+        this.pesoGramos = pesoGramos;
+        this.temperaturaAlmacenamiento = temperaturaAlmacenamiento;
+        this.requiereRefrigeracion = requiereRefrigeracion;
+    }
+
+    public double getPesoGramos() {
+        return pesoGramos;
+    }
+
+    public void setPesoGramos(double pesoGramos) {
+        this.pesoGramos = pesoGramos;
+    }
+
+    public double getTemperaturaAlmacenamiento() {
+        return temperaturaAlmacenamiento;
+    }
+
+    public void setTemperaturaAlmacenamiento(double temperaturaAlmacenamiento) {
+        this.temperaturaAlmacenamiento = temperaturaAlmacenamiento;
+    }
+
+    public boolean isRequiereRefrigeracion() {
+        return requiereRefrigeracion;
+    }
+
+    public void setRequiereRefrigeracion(boolean requiereRefrigeracion) {
+        this.requiereRefrigeracion = requiereRefrigeracion;
+    }
+
+    @Override
+    public double calcularPrecioVenta() {
+        return 0;
+    }
+}
