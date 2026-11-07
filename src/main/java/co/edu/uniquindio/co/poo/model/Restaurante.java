@@ -66,5 +66,4 @@ public class Restaurante {
     public void setListaPedidos(List<Pedido> listaPedidos) {
         this.listaPedidos = listaPedidos;
     }
-
 }
