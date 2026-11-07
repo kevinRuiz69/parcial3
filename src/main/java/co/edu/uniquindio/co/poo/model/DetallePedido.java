@@ -24,6 +24,7 @@ public class DetallePedido {
     public void setProducto(Producto producto) {
         this.producto = producto;
     }
+
     public double calcularSubtotal(){
         return producto.calcularPrecioVenta()*cantidad;
     }
