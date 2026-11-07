@@ -1,10 +1,12 @@
 package co.edu.uniquindio.co.poo.model;
 
-public class Bebida extends Producto{
+public class Bebida extends Producto {
     private double volumenMi;
     private double temperaturaServicio;
     private boolean esFria;
     private boolean preparacionEspecial;
+    private double precioBase;
+    private int volumenMl;
 
     public Bebida(String codigo, String nombre, String descripción, double precioBase, int tiempoPreparacionMin, double volumenMi, double temperaturaServicio, boolean esFria, boolean preparacionEspecial) {
         super(codigo, nombre, descripción, precioBase, tiempoPreparacionMin);
@@ -48,6 +50,36 @@ public class Bebida extends Producto{
 
     @Override
     public double calcularPrecioVenta() {
-        return 0;
+        double precioVenta = this.precioBase * 1.10;
+        if (this.preparacionEspecial) {
+            precioVenta += 3000.0;
+        }
+        return precioVenta;
     }
+
+    @Override
+    public boolean cumpleCalidad() {
+        if (this.volumenMl >= 150 && this.volumenMl <= 1500) {
+            if (this.esFria) {
+                if (this.temperaturaServicio >= 0 && this.temperaturaServicio <= 10) {
+                    return true;
+                }
+            } else {
+                if (this.temperaturaServicio >= 55 && this.temperaturaServicio <= 85) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+
 }
+
+
+
+
+
+
+
+

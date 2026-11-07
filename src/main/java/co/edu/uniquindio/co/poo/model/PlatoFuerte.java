@@ -4,6 +4,7 @@ public class PlatoFuerte extends Producto{
     private double pesoGramos;
     private TipoPreparacion tipoPreparacion;
     private boolean coccionAprobada;
+    private int tiempoPreparacionMin;
 
     public PlatoFuerte(String codigo, String nombre, String descripción, double precioBase, int tiempoPreparacionMin, double pesoGramos, TipoPreparacion tipoPreparacion, boolean coccionAprobada) {
         super(codigo, nombre, descripción, precioBase, tiempoPreparacionMin);
@@ -38,6 +39,17 @@ public class PlatoFuerte extends Producto{
 
     @Override
     public double calcularPrecioVenta() {
-        return 0;
+        return this.precioBase * 1.20;
+    }
+
+    @Override
+    public boolean cumpleCalidad() {
+        if (this.pesoGramos >= 200 && this.pesoGramos <= 900 &&
+                this.tiempoPreparacionMin >= 10 && this.tiempoPreparacionMin <= 60 &&
+                this.coccionAprobada) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }

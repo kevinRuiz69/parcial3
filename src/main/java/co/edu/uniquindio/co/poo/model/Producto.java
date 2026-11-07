@@ -55,4 +55,6 @@ public abstract class Producto {
         this.tiempoPreparacionMin = tiempoPreparacionMin;
     }
     public abstract double calcularPrecioVenta();
+
+    public abstract boolean cumpleCalidad();
 }
