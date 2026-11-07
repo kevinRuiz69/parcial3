@@ -1,11 +1,11 @@
 package co.edu.uniquindio.co.poo.model;
 
 public abstract class Producto {
-    private String codigo;
-    private String nombre;
-    private String descripción;
-    private double precioBase;
-    private int tiempoPreparacionMin;
+    protected String codigo;
+    protected String nombre;
+    protected String descripción;
+    protected double precioBase;
+    protected int tiempoPreparacionMin;
 
     public Producto(String codigo, String nombre, String descripción, double precioBase, int tiempoPreparacionMin) {
         this.codigo = codigo;

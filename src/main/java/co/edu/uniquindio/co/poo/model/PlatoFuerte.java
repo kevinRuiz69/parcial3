@@ -39,7 +39,7 @@ public class PlatoFuerte extends Producto{
 
     @Override
     public double calcularPrecioVenta() {
-        return this.precioBase * 1.20;
+        return precioBase * 1.20;
     }
 
     @Override
