@@ -66,4 +66,13 @@ public class Cliente {
     public void setHistorialPedidos(List<Pedido> historialPedidos) {
         this.historialPedidos = historialPedidos;
     }
+
+    public void agregarPedidoAlHistorial(Pedido pedido) {
+        if (pedido != null) {
+            this.historialPedidos.add(pedido);
+        }
+
+
+
+    }
 }
