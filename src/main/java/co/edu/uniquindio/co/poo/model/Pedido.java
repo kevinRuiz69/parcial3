@@ -21,7 +21,11 @@ public class Pedido {
         this.esDomicilio = esDomicilio;
         this.estadoPedido = estadoPedido;
         this.cliente = cliente;
-        this.detallePedidos = new ArrayList<>();
+        if (detallePedidos == null) {
+            this.detallePedidos = new ArrayList<>();
+        } else {
+            this.detallePedidos = detallePedidos;
+        }
     }
 
     public String getCodigo() {
@@ -41,6 +45,10 @@ public class Pedido {
     }
 
     public boolean getIsEsDomicilio() {
+        return esDomicilio;
+    }
+
+    public boolean isEsDomicilio() {
         return esDomicilio;
     }
 
@@ -85,7 +93,11 @@ public class Pedido {
     }
 
     public void setDetallePedidos(List<DetallePedido> detallePedidos) {
-        this.detallePedidos = detallePedidos;
+        if (detallePedidos == null) {
+            this.detallePedidos = new ArrayList<>();
+        } else {
+            this.detallePedidos = detallePedidos;
+        }
     }
 
     public ServicioDomicilio getServicioDomicilio() {
@@ -97,7 +109,10 @@ public class Pedido {
     }
 
     public boolean asignarDomicilio(ServicioDomicilio servicioDomicilio, double distanciaKm) {
-        if (!esDomicilio || servicioDomicilio == null || distanciaKm <= 0) {
+        this.domicilioAceptado = false;
+        this.servicioDomicilio = null;
+        this.distanciaKm = 0;
+        if (!esDomicilio || servicioDomicilio == null || !Double.isFinite(distanciaKm) || distanciaKm <= 0) {
             return false;
         }
 
@@ -132,6 +147,17 @@ public class Pedido {
             return false;
         }
         detallePedidos.add(detalle);
+        return true;
+    }
+
+    public boolean cambiarEstado(EstadoPedido nuevoEstado) {
+        if (nuevoEstado == null || estadoPedido == nuevoEstado) return false;
+        boolean transicionValida = (estadoPedido == EstadoPedido.PENDIENTE
+                && (nuevoEstado == EstadoPedido.CONFIRMADO || nuevoEstado == EstadoPedido.CANCELADO))
+                || (estadoPedido == EstadoPedido.CONFIRMADO
+                && (nuevoEstado == EstadoPedido.ENTREGADO || nuevoEstado == EstadoPedido.CANCELADO));
+        if (!transicionValida) return false;
+        estadoPedido = nuevoEstado;
         return true;
     }
 

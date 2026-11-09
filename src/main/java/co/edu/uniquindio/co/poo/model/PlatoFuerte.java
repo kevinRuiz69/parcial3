@@ -4,10 +4,18 @@ public class PlatoFuerte extends Producto{
     private double pesoGramos;
     private TipoPreparacion tipoPreparacion;
     private boolean coccionAprobada;
-    private int tiempoPreparacionMin;
 
     public PlatoFuerte(String codigo, String nombre, String descripción, double precioBase, int tiempoPreparacionMin, double pesoGramos, TipoPreparacion tipoPreparacion, boolean coccionAprobada) {
         super(codigo, nombre, descripción, precioBase, tiempoPreparacionMin);
+        if (tiempoPreparacionMin < 10 || tiempoPreparacionMin > 60) {
+            throw new IllegalArgumentException("El tiempo de preparación debe estar entre 10 y 60 minutos.");
+        }
+        if (pesoGramos < 200 || pesoGramos > 900) {
+            throw new IllegalArgumentException("El peso del plato debe estar entre 200 y 900 gramos.");
+        }
+        if (!coccionAprobada) {
+            throw new IllegalArgumentException("El plato debe aprobar el control de cocción.");
+        }
         this.pesoGramos = pesoGramos;
         this.tipoPreparacion = tipoPreparacion;
         this.coccionAprobada = coccionAprobada;
@@ -44,12 +52,7 @@ public class PlatoFuerte extends Producto{
 
     @Override
     public boolean cumpleCalidad() {
-        if (this.pesoGramos >= 200 && this.pesoGramos <= 900 &&
-                this.tiempoPreparacionMin >= 10 && this.tiempoPreparacionMin <= 60 &&
-                this.coccionAprobada) {
-            return true;
-        } else {
-            return false;
-        }
+        return pesoGramos >= 200 && pesoGramos <= 900 && tiempoPreparacionMin >= 10
+                && tiempoPreparacionMin <= 60 && coccionAprobada;
     }
 }

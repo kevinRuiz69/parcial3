@@ -1,27 +1,34 @@
 package co.edu.uniquindio.co.poo.model;
 
 public class Bebida extends Producto {
-    private double volumenMi;
+    private double volumenMl;
     private double temperaturaServicio;
     private boolean esFria;
     private boolean preparacionEspecial;
-    private double precioBase;
-    private int volumenMl;
 
-    public Bebida(String codigo, String nombre, String descripción, double precioBase, int tiempoPreparacionMin, double volumenMi, double temperaturaServicio, boolean esFria, boolean preparacionEspecial) {
+    public Bebida(String codigo, String nombre, String descripción, double precioBase, int tiempoPreparacionMin, double volumenMl, double temperaturaServicio, boolean esFria, boolean preparacionEspecial) {
         super(codigo, nombre, descripción, precioBase, tiempoPreparacionMin);
-        this.volumenMi = volumenMi;
+        if (volumenMl < 150 || volumenMl > 1500) {
+            throw new IllegalArgumentException("El volumen debe estar entre 150 y 1500 ml.");
+        }
+        if (esFria && (temperaturaServicio < 0 || temperaturaServicio > 10)) {
+            throw new IllegalArgumentException("La temperatura de una bebida fría debe estar entre 0 y 10 grados.");
+        }
+        if (!esFria && (temperaturaServicio < 55 || temperaturaServicio > 85)) {
+            throw new IllegalArgumentException("La temperatura de una bebida caliente debe estar entre 55 y 85 grados.");
+        }
+        this.volumenMl = volumenMl;
         this.temperaturaServicio = temperaturaServicio;
         this.esFria = esFria;
         this.preparacionEspecial = preparacionEspecial;
     }
 
-    public double getVolumenMi() {
-        return volumenMi;
+    public double getVolumenMl() {
+        return volumenMl;
     }
 
-    public void setVolumenMi(double volumenMi) {
-        this.volumenMi = volumenMi;
+    public void setVolumenMl(double volumenMl) {
+        this.volumenMl = volumenMl;
     }
 
     public double getTemperaturaServicio() {
@@ -59,20 +66,14 @@ public class Bebida extends Producto {
 
     @Override
     public boolean cumpleCalidad() {
-        if (this.volumenMl >= 150 && this.volumenMl <= 1500) {
-            if (this.esFria) {
-                if (this.temperaturaServicio >= 0 && this.temperaturaServicio <= 10) {
-                    return true;
-                }
-            } else {
-                if (this.temperaturaServicio >= 55 && this.temperaturaServicio <= 85) {
-                    return true;
-                }
-            }
+        if (volumenMl < 150 || volumenMl > 1500) {
+            return false;
         }
-        return false;
+        if (esFria) {
+            return temperaturaServicio >= 0 && temperaturaServicio <= 10;
+        }
+        return temperaturaServicio >= 55 && temperaturaServicio <= 85;
     }
-
 
 }
 
