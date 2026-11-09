@@ -319,7 +319,7 @@ public class Restaurante {
         return "Postres";
     }
 
-    private Pedido buscarPedido(String codigo) {
+    public Pedido buscarPedido(String codigo) {
         for (Pedido pedido : listaPedidos) {
             if (pedido.getCodigo() != null && pedido.getCodigo().equals(codigo)) {
                 return pedido;
