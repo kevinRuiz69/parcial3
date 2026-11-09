@@ -95,4 +95,44 @@ public class Pedido {
     public void setServicioDomicilio(ServicioDomicilio servicioDomicilio) {
         this.servicioDomicilio = servicioDomicilio;
     }
+
+    public boolean asignarDomicilio(ServicioDomicilio servicioDomicilio, double distanciaKm) {
+        if (!esDomicilio || servicioDomicilio == null || distanciaKm <= 0) {
+            return false;
+        }
+
+        this.distanciaKm = distanciaKm;
+        this.servicioDomicilio = servicioDomicilio;
+        this.domicilioAceptado = servicioDomicilio.solicitarServicio(distanciaKm);
+        return domicilioAceptado;
+    }
+
+    public double calcularCostoDomicilio() {
+        if (!esDomicilio || !domicilioAceptado || servicioDomicilio == null) {
+            return 0;
+        }
+
+        return servicioDomicilio.calcularCosto(distanciaKm);
+    }
+
+    public double calcularSubtotalProductos() {
+        double subtotal = 0;
+        for (DetallePedido detalle : detallePedidos) {
+            subtotal += detalle.calcularSubtotal();
+        }
+        return subtotal;
+    }
+
+    public double calcularTotal() {
+        return calcularSubtotalProductos() + calcularCostoDomicilio();
+    }
+
+    public boolean agregarDetalle(DetallePedido detalle) {
+        if (detalle == null || detalle.getCantidad() <= 0 || detalle.getProducto() == null) {
+            return false;
+        }
+        detallePedidos.add(detalle);
+        return true;
+    }
+
 }
