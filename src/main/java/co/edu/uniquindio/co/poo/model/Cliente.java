@@ -17,7 +17,11 @@ public class Cliente {
         this.telefono = telefono;
         this.correoElectronico = correoElectronico;
         this.direccionResidencia = direccionResidencia;
-        this.historialPedidos = historialPedidos == null ? new ArrayList<>() : new ArrayList<>(historialPedidos);
+        if (historialPedidos == null) {
+            this.historialPedidos = new ArrayList<>();
+        } else {
+            this.historialPedidos = historialPedidos;
+        }
     }
 
     public String getNumeroDocumento() {
@@ -65,7 +69,11 @@ public class Cliente {
     }
 
     public void setHistorialPedidos(List<Pedido> historialPedidos) {
-        this.historialPedidos = historialPedidos == null ? new ArrayList<>() : new ArrayList<>(historialPedidos);
+        if (historialPedidos == null) {
+            this.historialPedidos = new ArrayList<>();
+        } else {
+            this.historialPedidos = historialPedidos;
+        }
     }
 
     public void agregarPedidoAlHistorial(Pedido pedido) {

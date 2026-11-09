@@ -56,9 +56,13 @@ public class Postre extends Producto{
 
     @Override
     public boolean cumpleCalidad() {
-        return pesoGramos >= 80 && pesoGramos <= 500 && Double.isFinite(temperaturaAlmacenamiento)
-                && (requiereRefrigeracion ? temperaturaAlmacenamiento >= 0 && temperaturaAlmacenamiento <= 6
-                : temperaturaAlmacenamiento >= 15 && temperaturaAlmacenamiento <= 30);
+        if (pesoGramos < 80 || pesoGramos > 500) {
+            return false;
+        }
+        if (requiereRefrigeracion) {
+            return temperaturaAlmacenamiento >= 0 && temperaturaAlmacenamiento <= 6;
+        }
+        return temperaturaAlmacenamiento >= 15 && temperaturaAlmacenamiento <= 30;
     }
 
 }

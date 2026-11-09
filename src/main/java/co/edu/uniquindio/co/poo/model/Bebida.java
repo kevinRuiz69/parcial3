@@ -66,9 +66,13 @@ public class Bebida extends Producto {
 
     @Override
     public boolean cumpleCalidad() {
-        return volumenMl >= 150 && volumenMl <= 1500 && Double.isFinite(temperaturaServicio)
-                && (esFria ? temperaturaServicio >= 0 && temperaturaServicio <= 10
-                : temperaturaServicio >= 55 && temperaturaServicio <= 85);
+        if (volumenMl < 150 || volumenMl > 1500) {
+            return false;
+        }
+        if (esFria) {
+            return temperaturaServicio >= 0 && temperaturaServicio <= 10;
+        }
+        return temperaturaServicio >= 55 && temperaturaServicio <= 85;
     }
 
 }

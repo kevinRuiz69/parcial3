@@ -21,7 +21,11 @@ public class Pedido {
         this.esDomicilio = esDomicilio;
         this.estadoPedido = estadoPedido;
         this.cliente = cliente;
-        this.detallePedidos = detallePedidos == null ? new ArrayList<>() : new ArrayList<>(detallePedidos);
+        if (detallePedidos == null) {
+            this.detallePedidos = new ArrayList<>();
+        } else {
+            this.detallePedidos = detallePedidos;
+        }
     }
 
     public String getCodigo() {
@@ -89,7 +93,11 @@ public class Pedido {
     }
 
     public void setDetallePedidos(List<DetallePedido> detallePedidos) {
-        this.detallePedidos = detallePedidos == null ? new ArrayList<>() : new ArrayList<>(detallePedidos);
+        if (detallePedidos == null) {
+            this.detallePedidos = new ArrayList<>();
+        } else {
+            this.detallePedidos = detallePedidos;
+        }
     }
 
     public ServicioDomicilio getServicioDomicilio() {
