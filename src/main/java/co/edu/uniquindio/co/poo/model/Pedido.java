@@ -40,7 +40,7 @@ public class Pedido {
         this.fecha = fecha;
     }
 
-    public boolean isEsDomicilio() {
+    public boolean getIsEsDomicilio() {
         return esDomicilio;
     }
 
