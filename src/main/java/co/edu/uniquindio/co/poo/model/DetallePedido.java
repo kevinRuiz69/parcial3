@@ -5,6 +5,9 @@ public class DetallePedido {
     private Producto producto;
 
     public DetallePedido(int cantidad, Producto producto) {
+        if (cantidad <= 0) {
+            throw new IllegalArgumentException("La cantidad solicitada debe ser mayor que cero.");
+        }
         this.cantidad = cantidad;
         this.producto = producto;
     }

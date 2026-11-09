@@ -4,10 +4,18 @@ public class Postre extends Producto{
     private double pesoGramos;
     private double temperaturaAlmacenamiento;
     private boolean requiereRefrigeracion;
-    private double precioBase;
 
     public Postre(String codigo, String nombre, String descripción, double precioBase, int tiempoPreparacionMin, double pesoGramos, double temperaturaAlmacenamiento, boolean requiereRefrigeracion) {
         super(codigo, nombre, descripción, precioBase, tiempoPreparacionMin);
+        if (pesoGramos < 80 || pesoGramos > 500) {
+            throw new IllegalArgumentException("El peso del postre debe estar entre 80 y 500 gramos.");
+        }
+        if (requiereRefrigeracion && (temperaturaAlmacenamiento < 0 || temperaturaAlmacenamiento > 6)) {
+            throw new IllegalArgumentException("La temperatura de un postre refrigerado debe estar entre 0 y 6 grados.");
+        }
+        if (!requiereRefrigeracion && (temperaturaAlmacenamiento < 15 || temperaturaAlmacenamiento > 30)) {
+            throw new IllegalArgumentException("La temperatura de un postre no refrigerado debe estar entre 15 y 30 grados.");
+        }
         this.pesoGramos = pesoGramos;
         this.temperaturaAlmacenamiento = temperaturaAlmacenamiento;
         this.requiereRefrigeracion = requiereRefrigeracion;
@@ -48,17 +56,9 @@ public class Postre extends Producto{
 
     @Override
     public boolean cumpleCalidad() {
-        if (this.pesoGramos >= 80 && this.pesoGramos <= 500) {
-            if (this.requiereRefrigeracion) {
-                if (this.temperaturaAlmacenamiento >= 0 && this.temperaturaAlmacenamiento <= 6) {
-                    return true;
-                }
-            } else {
-                if (this.temperaturaAlmacenamiento >= 15 && this.temperaturaAlmacenamiento <= 30) {
-                    return true;
-                }
-            }
-        }
-        return false;
+        return pesoGramos >= 80 && pesoGramos <= 500 && Double.isFinite(temperaturaAlmacenamiento)
+                && (requiereRefrigeracion ? temperaturaAlmacenamiento >= 0 && temperaturaAlmacenamiento <= 6
+                : temperaturaAlmacenamiento >= 15 && temperaturaAlmacenamiento <= 30);
     }
+
 }

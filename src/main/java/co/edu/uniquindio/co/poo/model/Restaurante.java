@@ -11,331 +11,178 @@ public class Restaurante {
     private List<Cliente> listaClientes;
     private List<Producto> listaProducto;
     private List<Pedido> listaPedidos;
+    private int siguienteCodigoPedido = 1;
 
-    private ArrayList<Cliente> cliente= new ArrayList<>();
-    private ArrayList<Producto> productos=new ArrayList<>();
-    private ArrayList<Pedido> pedido=new ArrayList<>();
-
-    public Restaurante(String nombreComercial, String nit, String direccion, List<Cliente> listaClientes, List<Producto> listaProducto, List<Pedido> listaPedidos) {
+    public Restaurante(String nombreComercial, String nit, String direccion,
+                       List<Cliente> listaClientes, List<Producto> listaProducto,
+                       List<Pedido> listaPedidos) {
         this.nombreComercial = nombreComercial;
         this.nit = nit;
         this.direccion = direccion;
-        this.listaClientes = null;
-        this.listaProducto = null;
-        this.listaPedidos = null;
+        this.listaClientes = listaClientes == null ? new ArrayList<>() : new ArrayList<>(listaClientes);
+        this.listaProducto = listaProducto == null ? new ArrayList<>() : new ArrayList<>(listaProducto);
+        this.listaPedidos = listaPedidos == null ? new ArrayList<>() : new ArrayList<>(listaPedidos);
     }
 
-    public String getNombreComercial() {
-        return nombreComercial;
-    }
-
-    public void setNombreComercial(String nombreComercial) {
-        this.nombreComercial = nombreComercial;
-    }
-
-    public String getNit() {
-        return nit;
-    }
-
-    public void setNit(String nit) {
-        this.nit = nit;
-    }
-
-    public String getDireccion() {
-        return direccion;
-    }
-
-    public void setDireccion(String direccion) {
-        this.direccion = direccion;
-    }
-
-    public List<Cliente> getListaClientes() {
-        return listaClientes;
-    }
-
+    public String getNombreComercial() { return nombreComercial; }
+    public void setNombreComercial(String nombreComercial) { this.nombreComercial = nombreComercial; }
+    public String getNit() { return nit; }
+    public void setNit(String nit) { this.nit = nit; }
+    public String getDireccion() { return direccion; }
+    public void setDireccion(String direccion) { this.direccion = direccion; }
+    public List<Cliente> getListaClientes() { return listaClientes; }
     public void setListaClientes(List<Cliente> listaClientes) {
-        this.listaClientes = listaClientes;
+        this.listaClientes = listaClientes == null ? new ArrayList<>() : new ArrayList<>(listaClientes);
     }
-
-    public List<Producto> getListaProducto() {
-        return listaProducto;
-    }
-
+    public List<Producto> getListaProducto() { return listaProducto; }
     public void setListaProducto(List<Producto> listaProducto) {
-        this.listaProducto = listaProducto;
+        this.listaProducto = listaProducto == null ? new ArrayList<>() : new ArrayList<>(listaProducto);
     }
-
-    public List<Pedido> getListaPedidos() {
-        return listaPedidos;
-    }
-
+    public List<Pedido> getListaPedidos() { return listaPedidos; }
     public void setListaPedidos(List<Pedido> listaPedidos) {
-        this.listaPedidos = listaPedidos;
+        this.listaPedidos = listaPedidos == null ? new ArrayList<>() : new ArrayList<>(listaPedidos);
     }
-
-
 
     public boolean registrarProducto(Producto producto) {
-        if (producto == null) {
-            return false;
-        }
-        for (Producto p : productos) {
-            if (p.getCodigo().equals(producto.getCodigo())) {
-                return false;
-            }
-        }
-        productos.add(producto);
+        if (producto == null || buscarProducto(producto.getCodigo()) != null) return false;
+        listaProducto.add(producto);
         return true;
     }
-
-
 
     public boolean registrarCliente(Cliente nuevoCliente) {
-        if (nuevoCliente == null) {
-            return false;
-        }
-        for (Cliente c : cliente) {
-            if (c.getNumeroDocumento().equals(
-                    nuevoCliente.getNumeroDocumento())) {
-                return false;
-            }
-        }
-        cliente.add(nuevoCliente);
+        if (nuevoCliente == null || buscarCliente(nuevoCliente.getNumeroDocumento()) != null) return false;
+        listaClientes.add(nuevoCliente);
         return true;
     }
-
 
     public List<Producto> consultarProductosDisponibles() {
         List<Producto> disponibles = new ArrayList<>();
-        for (Producto p : productos) {
-            if (p.cumpleCalidad()) {
-                disponibles.add(p);
-            }
-        }
+        for (Producto producto : listaProducto) if (producto.cumpleCalidad()) disponibles.add(producto);
         return disponibles;
     }
 
-
-
     public List<Producto> consultarProductosNoAptos() {
         List<Producto> noAptos = new ArrayList<>();
-        for (Producto p : productos) {
-            if (!p.cumpleCalidad()) {
-                noAptos.add(p);
-            }
-        }
+        for (Producto producto : listaProducto) if (!producto.cumpleCalidad()) noAptos.add(producto);
         return noAptos;
     }
 
+    public Pedido registrarPedido(Cliente cliente, boolean esDomicilio) {
+        return registrarPedido(cliente, esDomicilio, LocalDate.now());
+    }
 
-
-
-
-    public Pedido registrarPedido(Cliente nuevoCliente,
-                                  boolean esDom, LocalDate fecha) {
-        Cliente clienteRegistrado = null;
-        int contadorPedidos=0;
-        for (Cliente c : cliente) {
-            if (c.getNumeroDocumento().equals(
-                    nuevoCliente.getNumeroDocumento())) {
-                clienteRegistrado = c;
-            }
-        }
-        if (clienteRegistrado == null) {
-            return null;
-        }
-        String codigo = "PED" + contadorPedidos;
-        contadorPedidos++;
-        Pedido nuevoPedido = new Pedido(
-                codigo,
-                fecha,
-                esDom,
-                EstadoPedido.PENDIENTE,
-                0,
-                false,
-                clienteRegistrado,
-                new ArrayList<DetallePedido>(),
-                null
-        );
+    public Pedido registrarPedido(Cliente cliente, boolean esDomicilio, LocalDate fecha) {
+        if (cliente == null || fecha == null) return null;
+        Cliente registrado = buscarCliente(cliente.getNumeroDocumento());
+        if (registrado == null) return null;
+        String codigo;
+        do { codigo = "PED" + siguienteCodigoPedido++; }
+        while (buscarPedido(codigo) != null);
+        Pedido nuevoPedido = new Pedido(codigo, fecha, esDomicilio, EstadoPedido.PENDIENTE,
+                registrado, new ArrayList<>());
+        listaPedidos.add(nuevoPedido);
         return nuevoPedido;
     }
 
-
-    public boolean confirmarPedido(Pedido nuevoPedido) {
-        if (nuevoPedido == null) {
-            return false;
+    public boolean confirmarPedido(Pedido pedido) {
+        if (pedido == null || pedido.getEstadoPedido() != EstadoPedido.PENDIENTE) return false;
+        if (buscarPedido(pedido.getCodigo()) != pedido) return false;
+        Cliente clienteRegistrado = buscarCliente(pedido.getCliente().getNumeroDocumento());
+        if (clienteRegistrado != pedido.getCliente()) return false;
+        if (pedido.getDetallePedidos().isEmpty()) return false;
+        for (DetallePedido detalle : pedido.getDetallePedidos()) {
+            if (detalle == null || detalle.getCantidad() <= 0 || detalle.getProducto() == null) return false;
+            Producto productoMenu = buscarProducto(detalle.getProducto().getCodigo());
+            if (productoMenu == null || productoMenu != detalle.getProducto() || !productoMenu.cumpleCalidad()) return false;
         }
-        for (Pedido p : pedido) {
-            if (p.getCodigo().equals(nuevoPedido.getCodigo())) {
-                return false;
-            }
+        if (pedido.isEsDomicilio()) {
+            ServicioDomicilio servicio = pedido.getServicioDomicilio();
+            double km = pedido.getDistanciaKm();
+            if (!pedido.isDomicilioAceptado() || servicio == null || !servicio.aceptaDistancia(km)
+                    || !servicio.solicitarServicio(km)) return false;
         }
-        boolean clienteRegistrado = false;
-        for (Cliente c : cliente) {
-            if (c.getNumeroDocumento().equals(
-                    nuevoPedido.getCliente().getNumeroDocumento())) {
-                clienteRegistrado = true;
-            }
-        }
-        if (!clienteRegistrado) {
-            return false;
-        }
-        boolean tieneProductos = false;
-        for (DetallePedido d : nuevoPedido.getDetallePedidos()) {
-            tieneProductos = true;
-            if (d.getCantidad() <= 0) {
-                return false;
-            }
-            boolean productoRegistrado = false;
-            for (Producto p : productos) {
-                if (p.getCodigo().equals(
-                        d.getProducto().getCodigo())) {
-                    productoRegistrado = true;
-                }
-            }
-            if (!productoRegistrado || !d.getProducto().cumpleCalidad()) {
-                return false;
-            }
-        }
-        if (!tieneProductos) {
-            return false;
-        }
-        if (nuevoPedido.getEsDomicilio() &&
-                !nuevoPedido.getDomicilioAceptado()) {
-            return false;
-        }
-        if (nuevoPedido.cambiarEstado(EstadoPedido.CONFIRMADO)) {
-            pedido.add(nuevoPedido);
-            nuevoPedido.getCliente().agregarPedidoAlHistorial(nuevoPedido);
-            return true;
-        }
-        return false;
+        if (!pedido.cambiarEstado(EstadoPedido.CONFIRMADO)) return false;
+        pedido.getCliente().agregarPedidoAlHistorial(pedido);
+        return true;
     }
 
-
-    public List<Pedido> consultarPedidosCliente(String doc) {
+    public List<Pedido> consultarPedidosCliente(String documento) {
         List<Pedido> pedidosCliente = new ArrayList<>();
-        for (Pedido p : pedido) {
-            if (p.getCliente().getNumeroDocumento().equals(doc)) {
-                pedidosCliente.add(p);
-            }
-        }
+        for (Pedido pedido : listaPedidos)
+            if (pedido.getCliente().getNumeroDocumento().equals(documento)) pedidosCliente.add(pedido);
         return pedidosCliente;
     }
 
-
-    public boolean entregarPedido(Pedido pedidoEntregar) {
-        if (pedidoEntregar == null) {
-            return false;
-        }
-        for (Pedido p : pedido) {
-            if (p.getCodigo().equals(pedidoEntregar.getCodigo())) {
-                if (p.getEstado() == EstadoPedido.CONFIRMADO) {
-                    return p.cambiarEstado(EstadoPedido.ENTREGADO);
-                }
-            }
-        }
-        return false;
+    public boolean entregarPedido(Pedido pedido) {
+        Pedido registrado = pedido == null ? null : buscarPedido(pedido.getCodigo());
+        return registrado != null && registrado == pedido && registrado.cambiarEstado(EstadoPedido.ENTREGADO);
     }
 
-
-    public boolean cancelarPedido(Pedido pedidoCancelar) {
-        if (pedidoCancelar == null) {
-            return false;
-        }
-        for (Pedido p : pedido) {
-            if (p.getCodigo().equals(pedidoCancelar.getCodigo())) {
-                if (p.getEstado() == EstadoPedido.PENDIENTE ||
-                        p.getEstado() == EstadoPedido.CONFIRMADO) {
-                    return p.cambiarEstado(EstadoPedido.CANCELADO);
-                }
-            }
-        }
-        return false;
+    public boolean cancelarPedido(Pedido pedido) {
+        Pedido registrado = pedido == null ? null : buscarPedido(pedido.getCodigo());
+        return registrado != null && registrado == pedido && registrado.cambiarEstado(EstadoPedido.CANCELADO);
     }
-
 
     public double calcularIngresosRestaurante() {
         double ingresos = 0;
-        for (Pedido p : pedido) {
-            if (p.getEstadoPedido() == EstadoPedido.CONFIRMADO ||
-                    p.getEstadoPedido() == EstadoPedido.ENTREGADO) {
-                ingresos += p.calcularSubtotalProductos();
-            }
-        }
+        for (Pedido pedido : listaPedidos) if (generaIngresos(pedido)) ingresos += pedido.calcularSubtotalProductos();
         return ingresos;
     }
-
 
     public double calcularIngresosDomicilios() {
         double ingresos = 0;
-        for (Pedido p : pedido) {
-            if ((p.getEstadoPedido() == EstadoPedido.CONFIRMADO ||
-                    p.getEstadoPedido() == EstadoPedido.ENTREGADO)
-                    && p.getIsEsDomicilio()) {
-                ingresos += p.calcularCostoDomicilio();
-            }
-        }
+        for (Pedido pedido : listaPedidos)
+            if (generaIngresos(pedido) && pedido.isEsDomicilio()) ingresos += pedido.calcularCostoDomicilio();
         return ingresos;
     }
-
 
     public Producto productoMasVendido() {
         Producto masVendido = null;
         int mayorCantidad = 0;
-        for (Producto productoActual : productos) {
-            int cantidadTotal = 0;
-            for (Pedido p : pedido) {
-                if (p.getEstadoPedido() == EstadoPedido.CONFIRMADO ||
-                        p.getEstadoPedido() == EstadoPedido.ENTREGADO) {
-                    for (DetallePedido d : p.getDetallePedidos()) {
-                        if (d.getProducto().getCodigo().equals(
-                                productoActual.getCodigo())) {
-                            cantidadTotal += d.getCantidad();
-                        }
-                    }
-                }
-            }
-            if (cantidadTotal > mayorCantidad) {
-                mayorCantidad = cantidadTotal;
-                masVendido = productoActual;
-            }
+        for (Producto producto : listaProducto) {
+            int cantidad = 0;
+            for (Pedido pedido : listaPedidos) if (generaIngresos(pedido))
+                for (DetallePedido detalle : pedido.getDetallePedidos())
+                    if (detalle.getProducto() == producto) cantidad += detalle.getCantidad();
+            if (cantidad > mayorCantidad) { mayorCantidad = cantidad; masVendido = producto; }
         }
         return masVendido;
     }
 
-
     public String categoriaMayoresIngresos() {
-        double ingresosPlatos = 0;
-        double ingresosBebidas = 0;
-        double ingresosPostres = 0;
-        for (Pedido p : pedido) {
-            if (p.getEstadoPedido() == EstadoPedido.CONFIRMADO ||
-                    p.getEstadoPedido() == EstadoPedido.ENTREGADO) {
-                for (DetallePedido d : p.getDetallePedidos()) {
-                    double subtotal = d.calcularSubtotal();
-                    if (d.getProducto() instanceof PlatoFuerte) {
-                        ingresosPlatos += subtotal;
-                    } else if (d.getProducto() instanceof Bebida) {
-                        ingresosBebidas += subtotal;
-                    } else if (d.getProducto() instanceof Postre) {
-                        ingresosPostres += subtotal;
-                    }
-                }
+        double platos = 0, bebidas = 0, postres = 0;
+        for (Pedido pedido : listaPedidos) if (generaIngresos(pedido))
+            for (DetallePedido detalle : pedido.getDetallePedidos()) {
+                double subtotal = detalle.calcularSubtotal();
+                if (detalle.getProducto() instanceof PlatoFuerte) platos += subtotal;
+                else if (detalle.getProducto() instanceof Bebida) bebidas += subtotal;
+                else if (detalle.getProducto() instanceof Postre) postres += subtotal;
             }
-        }
-        if (ingresosPlatos >= ingresosBebidas &&
-                ingresosPlatos >= ingresosPostres) {
-            return "Platos fuertes";
-        } else if (ingresosBebidas >= ingresosPlatos &&
-                ingresosBebidas >= ingresosPostres) {
-            return "Bebidas";
-        } else {
-            return "Postres";
-        }
+        if (platos == 0 && bebidas == 0 && postres == 0) return "Sin ventas";
+        if (platos >= bebidas && platos >= postres) return "Platos fuertes";
+        if (bebidas >= platos && bebidas >= postres) return "Bebidas";
+        return "Postres";
     }
 
+    private boolean generaIngresos(Pedido pedido) {
+        return pedido.getEstadoPedido() == EstadoPedido.CONFIRMADO || pedido.getEstadoPedido() == EstadoPedido.ENTREGADO;
+    }
 
+    public Cliente buscarCliente(String documento) {
+        if (documento == null) return null;
+        for (Cliente cliente : listaClientes) if (cliente.getNumeroDocumento().equals(documento)) return cliente;
+        return null;
+    }
 
+    public Producto buscarProducto(String codigo) {
+        if (codigo == null) return null;
+        for (Producto producto : listaProducto) if (producto.getCodigo().equals(codigo)) return producto;
+        return null;
+    }
 
+    private Pedido buscarPedido(String codigo) {
+        if (codigo == null) return null;
+        for (Pedido pedido : listaPedidos) if (pedido.getCodigo().equals(codigo)) return pedido;
+        return null;
+    }
 }

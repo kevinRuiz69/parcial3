@@ -1,6 +1,7 @@
 package co.edu.uniquindio.co.poo.model;
 
 import java.util.List;
+import java.util.ArrayList;
 
 public class Cliente {
     private String numeroDocumento;
@@ -16,7 +17,7 @@ public class Cliente {
         this.telefono = telefono;
         this.correoElectronico = correoElectronico;
         this.direccionResidencia = direccionResidencia;
-        this.historialPedidos = historialPedidos;
+        this.historialPedidos = historialPedidos == null ? new ArrayList<>() : new ArrayList<>(historialPedidos);
     }
 
     public String getNumeroDocumento() {
@@ -64,11 +65,11 @@ public class Cliente {
     }
 
     public void setHistorialPedidos(List<Pedido> historialPedidos) {
-        this.historialPedidos = historialPedidos;
+        this.historialPedidos = historialPedidos == null ? new ArrayList<>() : new ArrayList<>(historialPedidos);
     }
 
     public void agregarPedidoAlHistorial(Pedido pedido) {
-        if (pedido != null) {
+        if (pedido != null && !this.historialPedidos.contains(pedido)) {
             this.historialPedidos.add(pedido);
         }
 
