@@ -78,12 +78,11 @@ public class App {
                             + "1. Registrar producto\n"
                             + "2. Registrar cliente\n"
                             + "3. Consultar productos disponibles\n"
-                            + "4. Consultar productos no aptos\n"
-                            + "5. Registrar pedido\n"
-                            + "6. Confirmar, entregar o cancelar pedido\n"
-                            + "7. Consultar pedidos de un cliente\n"
-                            + "8. Consultar ingresos del restaurante\n"
-                            + "9. Consultar ingresos por domicilios\n"
+                            + "4. Registrar pedido\n"
+                            + "5. Confirmar, entregar o cancelar pedido\n"
+                            + "6. Consultar pedidos de un cliente\n"
+                            + "7. Consultar ingresos del restaurante\n"
+                            + "8. Consultar ingresos por domicilios\n"
                             + "0. Salir");
 
             if (texto == null) {
@@ -94,13 +93,12 @@ public class App {
                 opcion = Integer.parseInt(texto);
                 if (opcion == 1) registrarProducto();
                 else if (opcion == 2) registrarCliente();
-                else if (opcion == 3) consultarProductos(true);
-                else if (opcion == 4) consultarProductos(false);
-                else if (opcion == 5) registrarPedido();
-                else if (opcion == 6) gestionarPedido();
-                else if (opcion == 7) consultarPedidosCliente();
-                else if (opcion == 8) consultarIngresosRestaurante();
-                else if (opcion == 9) consultarIngresosDomicilios();
+                else if (opcion == 3) consultarProductosDisponibles();
+                else if (opcion == 4) registrarPedido();
+                else if (opcion == 5) gestionarPedido();
+                else if (opcion == 6) consultarPedidosCliente();
+                else if (opcion == 7) consultarIngresosRestaurante();
+                else if (opcion == 8) consultarIngresosDomicilios();
                 else if (opcion == 0) JOptionPane.showMessageDialog(null, "Programa terminado.");
                 else JOptionPane.showMessageDialog(null, "Opción no válida.");
             } catch (NumberFormatException e) {
@@ -184,16 +182,10 @@ public class App {
         }
     }
 
-    private void consultarProductos(boolean disponibles) {
-        List<Producto> productos;
-        if (disponibles) {
-            productos = restaurante.consultarProductosDisponibles();
-        } else {
-            productos = restaurante.consultarProductosNoAptos();
-        }
-
+    private void consultarProductosDisponibles() {
+        List<Producto> productos = restaurante.consultarProductosDisponibles();
         if (productos.isEmpty()) {
-            JOptionPane.showMessageDialog(null, "No hay productos para mostrar.");
+            JOptionPane.showMessageDialog(null, "No hay productos disponibles.");
             return;
         }
 
